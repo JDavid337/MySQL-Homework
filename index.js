@@ -75,14 +75,14 @@ function deptsAll () {
     }
 )}
 function rolesAll () {
-    connection.query('SELECT, title, salary, department_id FROM roles', (err, data) => {
+    connection.query('SELECT title, salary, department_id FROM roles', (err, data) => {
         if (err) throw err;
         console.table(data);
         runProgram();
     }
 )}
 
-function createEmployee () {
+const createEmployee = () => {
     inquirer.prompt([
         {
             type: 'input',
@@ -96,7 +96,7 @@ function createEmployee () {
         },
         {
             type: 'list',
-            option: 'option',
+            name: 'option',
             message: 'what is the employees new job?',
             choices: ['retail', 'shipping', 'orders', 'support']
 
@@ -109,11 +109,37 @@ function createEmployee () {
             {
                 first_name: answers.first_name,
                 last_name: answers.last_name,
-                role_id: answers.role_id
+                role_id: answers.role_id,
+                manager_id: answers.manager_id
             },
             (err) => {
             if (err) throw err;
             console.log('employee created successfully!')
+            runProgram();
+            }
+        )
+    })
+}
+
+const deptCreate = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'what is the new department name?',
+
+        }
+    ])
+
+    .then((answers) => { 
+        connection.query(
+            'INSERT INTO departments SET ?', 
+            {
+                name: answers.name
+            },
+            (err) => {
+            if (err) throw err;
+            console.log('department created successfully!')
             runProgram();
             }
         )
