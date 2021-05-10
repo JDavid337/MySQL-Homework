@@ -54,9 +54,6 @@ function runProgram() {
                 break;
             case 'create role':
                 createRole();
-            case 'search for Employee':
-                employee();
-                break;
         }
     })
 }
@@ -125,7 +122,7 @@ const deptCreate = () => {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'name',
+            name: 'department',
             message: 'what is the new department name?',
 
         }
@@ -135,7 +132,7 @@ const deptCreate = () => {
         connection.query(
             'INSERT INTO departments SET ?', 
             {
-                name: answers.name
+                department: answers.department
             },
             (err) => {
             if (err) throw err;
@@ -145,3 +142,55 @@ const deptCreate = () => {
         )
     })
 }
+
+const createRole = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'title',
+            message: 'what is the new title?',
+            choices: ['Manager', 'Contractor', 'Employee']
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'what will be their annual salary?',
+        },
+        {
+            type: 'list',
+            name: 'department_id',
+            message: 'which department will this new role be located?',
+            choices: ['retail', 'shipping', 'orders', 'support']
+        } 
+    ])
+
+    .then((answers) => { 
+        connection.query(
+            'INSERT INTO roles SET ?', 
+            {
+                title: answers.title,
+                salary: answers.salary,
+                department_id: answers.department_id
+            },
+            (err) => {
+            if (err) throw err;
+            console.log('role created successfully!')
+            runProgram();
+            }
+        )
+    })
+}
+
+const updateEmpRole = () => {
+    connection.query ('SELECT * FROM employees', (err, data) => {
+        if (err) throw err;
+        inquirer.prompt(
+        [{
+            type: 'rawlist',
+            name: 'choice',
+            message: 'which employee role would you like to update?',
+            choices: ['']
+        }])
+        console.log('role updated successfully!')
+        runProgram();
+})}
