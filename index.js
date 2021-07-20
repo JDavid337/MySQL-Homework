@@ -122,7 +122,7 @@ const deptCreate = () => {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'department',
+            name: 'name',
             message: 'what is the new department name?',
 
         }
@@ -131,9 +131,7 @@ const deptCreate = () => {
     .then((answers) => { 
         connection.query(
             'INSERT INTO departments SET ?', 
-            {
-                department: answers.department
-            },
+            answers,
             (err) => {
             if (err) throw err;
             console.log('department created successfully!')
@@ -160,7 +158,7 @@ const createRole = () => {
             type: 'list',
             name: 'department_id',
             message: 'which department will this new role be located?',
-            choices: ['retail', 'shipping', 'orders', 'support']
+            choices: [{name:'retail', value: 1}, {name: 'shipping', value: 2}, {name: 'orders', value: 3}, {name: 'support', value: 4}]
         } 
     ])
 
@@ -187,10 +185,29 @@ const updateEmpRole = () => {
         inquirer.prompt(
         [{
             type: 'rawlist',
-            name: 'choice',
-            message: 'which employee role would you like to update?',
-            choices: ['']
-        }])
-        console.log('role updated successfully!')
-        runProgram();
+            name: 'employee_id',
+            message: 'which employee would you like to select?',
+            choices: [{name: 'Jim Smith', value: 1}, {name: 'Lisa Jackson', value: 2} , {name: 'Jack Vorhees', value: 3}, {name: 'asdf asdf', value: 4}, {name: 'John Smith', value: 5}]
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'what will be the new role?',
+            choices: [{name: 'cashier', value: 1} , {name: 'driver', value: 2}, {name: 'data_entry', value: 3}, {name: 'service', value: 4}, {name: 'Employee', value: 5}, {name: 'Contractor', value: 6}, {name: 'Employee', value: 7}]
+        }]
+
+        )
+
+
+        .then((answers) => { 
+            connection.query(
+                'UPDATE employees SET role_id = ? WHERE id = ?', 
+                [answers.role_id, answers.employee_id],
+                (err) => {
+                if (err) throw err;
+                console.log('role updated successfully!')
+                runProgram();
+                }
+            )
+        })
 })}
